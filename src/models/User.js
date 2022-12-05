@@ -59,7 +59,7 @@ const loginUser = async (body) => {
     const match = await bcrypt.compare(body.password, user.password);
     if (match) {
       const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET, {
-        expiresIn: "1h"
+        expiresIn: "7d"
       });
       return { message: `logged in successfully`, token };
     } else {

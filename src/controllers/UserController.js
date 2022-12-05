@@ -1,9 +1,5 @@
 const User = require("../models/User");
 
-function verifyToken(token){
-
-}
-
 const getUsers = async (req, res) => {
   
   try {
@@ -15,7 +11,6 @@ const getUsers = async (req, res) => {
   }
 };
 const postUser = async (req, res) => {
-  console.log("request body : ", req.body);
 
   const onValidUsername = (val) => {
     const usernameRegex = /^[a-z0-9_.]+$/;

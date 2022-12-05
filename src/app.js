@@ -9,6 +9,7 @@ const verifyToken = require("./auth");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const contactsRouter = require("./routes/contacts");
 
 var app = express();
 
@@ -20,5 +21,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users", usersRouter);
 app.use("/api", verifyToken, indexRouter);
+app.use("/api/contacts", verifyToken, contactsRouter);
 
 module.exports = app;
