@@ -3,7 +3,7 @@ const User = require("../models/User");
 const getUsers = async (req, res) => {
   
   try {
-    const users = await User.getUsers(req.headers.authorization.split(" ")[1]);
+    const users = await User.getUsers();
     res.send(users);
   } catch (err) {
     res.status(400)

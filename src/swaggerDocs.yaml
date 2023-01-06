@@ -1,29 +1,171 @@
+components:
+  schemas:
+    User:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    Login:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    postContact:
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        companyOrInstitute:
+          type: string
+        titleOrRole:
+          type: string
+        isFavorite:
+          type: boolean
+    putContact:
+      properties:
+        _id:
+          type: string
+          required: true
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        companyOrInstitute:
+          type: string
+        titleOrRole:
+          type: string
+        isFavorite:
+          type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, for documentation purposes only
+      description: >-
+        Enter the `JWT` token provided at the time of login.
 paths:
   /api/users:
     get:
-      summary: Returns a user by ID.
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          type: integer
-          minimum: 1
-          description: The ID of the user to return.
+      summary: Get all users.
       responses:
         200:
-          description: A User object.
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                example: 4
-              name:
-                type: string
-                example: Arthur Dent
+          description: Successfully fetched all users.
+        other:
+          description: Unexpected error.
+    post:
+      summary: Create new user.
+      requestBody:
+        description: Request body to create new user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: User created successfull.
         400:
-          description: The specified user ID is invalid (e.g. not a number).
-        404:
-          description: A user with the specified ID was not found.
-        default:
-          description: Unexpected error
+          description: Request body error.
+        other:
+          description: Unexpected error.
+  /api/users/login:
+    post:
+      summary: Get JWT token.
+      requestBody:
+        description: Request body to login the user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        200:
+          description: User logged in successfull.
+        400:
+          description: Request body error.
+        401:
+          description: Incorrect username or password.
+        other:
+          description: Unexpected error.
+  /api/contacts:
+    get:
+      summary: Returns all contacts of the user with provided JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully fetched all contacts of the given user.
+        401:
+          description: JWT token error or not provided in the header.
+        other:
+          description: Unexpected error.
+    post:
+      summary: Create new contact.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Request body to create new contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/postContact"
+      responses:
+        201:
+          description: New contact created successfully.
+        400:
+          description: Request body error.
+        401:
+          description: JWT token error or not provided in the header.
+        other:
+          description: Unexpected error.
+    put:
+      summary: Edit existing contact.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Request body to create new contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/putContact"
+      responses:
+        200:
+          description: Contact saved successfully.
+        400:
+          description: Request body error.
+        401:
+          description: JWT token error or not provided in the header.
+        other:
+          description: Unexpected error.
+    delete:
+      summary: Delete a contact.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: _id
+          type: string
+          required: true
+          description: Id of the contact to delete
+      responses:
+        200:
+          description: Contact deleted successfully.
+        400:
+          description: May be _id parameter not found.
+        401:
+          description: JWT token error or not provided in the header.
+        other:
+          description: Unexpected error.
